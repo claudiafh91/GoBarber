@@ -1,2 +1,2 @@
-# GoBarber
-Bootcamp 2019. Rocketseat
+# Meetapp
+Bootcamp 2019. Rocketseat GoStack
