@@ -1,0 +1,90 @@
+import { Op } from 'sequelize';
+
+import Meetup from '../models/Meetup';
+import Subscription from '../models/Subscription';
+import User from '../models/User';
+
+import Queue from '../../lib/Queue';
+import SubscriptionEmail from '../jobs/subscriptionsEmail';
+
+class SubscriptionsController {
+  async index(req, res) {
+    const suscriptions = await Subscription.findAll({
+      where: { id_user: req.userId },
+      include: [
+        {
+          model: Meetup,
+          order: ['datetime'],
+          where: {
+            datetime: {
+              [Op.gt]: new Date(),
+            },
+          },
+        },
+      ],
+    });
+    return res.json(suscriptions);
+  }
+
+  async store(req, res) {
+    const meetup = await Meetup.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ['name', 'email'],
+        },
+      ],
+    });
+
+    if (meetup.id_user === req.userId) {
+      return res.status(401).json({
+        error: 'You can not subscribe to this meetup',
+      });
+    }
+
+    if (meetup.happened) {
+      return res.status(400).json({
+        error: 'This meetup have already happened. You can not subscribe.',
+      });
+    }
+
+    const sameDate = await Subscription.findOne({
+      where: {
+        id_user: req.userId,
+      },
+      include: [
+        {
+          model: Meetup,
+          required: true,
+          where: {
+            datetime: meetup.datetime,
+          },
+        },
+      ],
+    });
+
+    if (sameDate) {
+      return res.status(400).json({
+        error:
+          'You can not subscribe. Date match with another meetup or you are already subscribed.',
+      });
+    }
+
+    const subscription = await Subscription.create({
+      id_user: req.userId,
+      id_meetup: meetup.id,
+    });
+
+    const user = await User.findByPk(req.userId);
+
+    await Queue.add(SubscriptionEmail.key, {
+      user,
+      meetup,
+      subscription,
+    });
+
+    return res.json(subscription);
+  }
+}
+
+export default new SubscriptionsController();
