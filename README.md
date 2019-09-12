@@ -1,5 +1,5 @@
 # Meetapp
-Bootcamp 2019. Rocketseat GoStack.
+Rockeatseat. Bootcamp GoStack 8.0. Desafio 02-03
 
 Meetapp (an acronym for Meetup + App). 
 App that allows the creation of events for developers. 
