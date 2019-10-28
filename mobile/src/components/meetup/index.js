@@ -18,7 +18,7 @@ import {
 
 export default function meetup({ nameAction, action, data }) {
   const { profile } = useSelector(state => state.User);
-  
+
   // const banner = `http://10.0.3.2:3333/banner/${data.Banner.path}`;
   const banner = data.Banner.url;
 
@@ -27,7 +27,7 @@ export default function meetup({ nameAction, action, data }) {
     "'Dia' dd 'de' MMMM 'de' yyyy', às ' HH:mm'h'",
     { locale: pt }
   );
-  
+
   return (
     <Container>
       <Banner source={{ uri: banner }} />

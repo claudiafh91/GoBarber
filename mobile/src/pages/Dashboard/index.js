@@ -27,7 +27,7 @@ export default function Dashboard() {
     () => format(date, "d 'de' MMMM 'de' yyyy", { locale: pt }),
     [date]
   );
-  
+
   async function loadMeetups(loadPage = 1) {
     try {
       const response = await api.get('/meetups', {
@@ -70,14 +70,18 @@ export default function Dashboard() {
 
   async function handleInscription(id) {
     try {
-      const response = await api.post(`/subscription/${id}`);
-	  
-	  setMeetups(meetups.map(meetup => 
-		meetup.id === id ? {
-			...meetup,
-			action_at: true
-		} : meetup
-	  ));
+      await api.post(`/subscription/${id}`);
+
+      setMeetups(
+        meetups.map(meetup =>
+          meetup.id === id
+            ? {
+                ...meetup,
+                action_at: true,
+              }
+            : meetup
+        )
+      );
     } catch (err) {
       Alert.alert('Falhou a inscrição.');
     }

@@ -16,12 +16,12 @@ export default function Inscription() {
 
   useEffect(() => {
     async function loadSubscriptions() {
-		console.tron.log('Ejecuta');
       try {
         setLoading(true);
-        const response = await api.get('/subscriptions');
 
+        const response = await api.get('/subscriptions');
         setSubscriptions(response.data);
+
         setLoading(false);
       } catch (err) {
         Alert.alert('Ocurreu um erro durante a recuperação das inscriçoes');
@@ -33,14 +33,18 @@ export default function Inscription() {
 
   async function cancelInscription(id) {
     try {
-      const response = await api.delete(`/canceled-subscription/${id}`);
-	  
-	   setSubscriptions(subscriptions.map(subscription => 
-		subscription.id === id ? {
-			...subscription,
-			action_at: true
-		} : subscription
-	  ));
+      await api.delete(`/canceled-subscription/${id}`);
+
+      setSubscriptions(
+        subscriptions.map(subscription =>
+          subscription.id === id
+            ? {
+                ...subscription,
+                action_at: true,
+              }
+            : subscription
+        )
+      );
     } catch (err) {
       Alert.alert('Falhou o cancelamento do inscrição.');
     }
