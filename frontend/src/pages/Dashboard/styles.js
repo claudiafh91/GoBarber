@@ -79,9 +79,8 @@ export const Data = styled.li`
 `;
 
 export const ActivityIndicator = styled.p`
-	color: #999;
-	 margin-top: 30px;
-	 font-weight: solid;
-	 font-size: 20px;
-
+  color: #999;
+  margin-top: 30px;
+  font-weight: solid;
+  font-size: 20px;
 `;

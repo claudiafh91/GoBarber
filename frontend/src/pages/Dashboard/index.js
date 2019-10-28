@@ -22,8 +22,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     async function loadMeetups() {
-      try{ 
-		setLoading(true);
+      try {
+        setLoading(true);
         const response = await api.get('my-meetups');
 
         const data = response.data.map(meetup => ({
@@ -34,11 +34,11 @@ export default function Dashboard() {
             { locale: pt }
           ),
         }));
-		console.tron.log(data);
+
         setMeetups(data);
-		setLoading(false);
+        setLoading(false);
       } catch (err) {
-		setLoading(false);
+        setLoading(false);
         toast.error('Falha na autenticação de meetups');
       }
     }
@@ -69,27 +69,29 @@ export default function Dashboard() {
         </Link>
       </nav>
       <main>
-	  {loading ? <ActivityIndicator>Carregando...</ActivityIndicator> : (
-		<ul>
-          {meetups.map(meetup => (
-            <Data key={meetup.id}>
-              <strong>{meetup.title}</strong>
-              <span>{meetup.dateFormatted}</span>
-              <Link to="/meetup/details">
-                <button
-                  id="details"
-                  type="button"
-                  data-tip="Veja detalhes do encontro"
-                  onClick={() => showDetailsMeetup(meetup.id)}
-                >
-                  <MdNavigateNext size="20" color="#fff" />
-                </button>
-                <ReactTooltip type="info" />
-              </Link>
-            </Data>
-          ))}
-        </ul>
-	  )}
+        {loading ? (
+          <ActivityIndicator>Carregando...</ActivityIndicator>
+        ) : (
+          <ul>
+            {meetups.map(meetup => (
+              <Data key={meetup.id}>
+                <strong>{meetup.title}</strong>
+                <span>{meetup.dateFormatted}</span>
+                <Link to="/meetup/details">
+                  <button
+                    id="details"
+                    type="button"
+                    data-tip="Veja detalhes do encontro"
+                    onClick={() => showDetailsMeetup(meetup.id)}
+                  >
+                    <MdNavigateNext size="20" color="#fff" />
+                  </button>
+                  <ReactTooltip type="info" />
+                </Link>
+              </Data>
+            ))}
+          </ul>
+        )}
       </main>
     </Container>
   );
