@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 
 import Meetup from '../models/Meetup';
+import Banner from '../models/Banner';
 import Subscription from '../models/Subscription';
 import User from '../models/User';
 
@@ -20,6 +21,16 @@ class SubscriptionsController {
               [Op.gt]: new Date(),
             },
           },
+          include: [
+            {
+              model: Banner,
+              attributes: ['id', 'path', 'url'],
+            },
+            {
+              model: User,
+              attributes: ['id', 'name'],
+            },
+          ],
         },
       ],
     });
@@ -38,7 +49,8 @@ class SubscriptionsController {
 
     if (meetup.id_user === req.userId) {
       return res.status(401).json({
-        error: 'You can not subscribe to this meetup',
+        error:
+          'You can not subscribe to this meetup. The user is the organizer of the meetup .',
       });
     }
 
@@ -84,6 +96,22 @@ class SubscriptionsController {
     });
 
     return res.json(subscription);
+  }
+
+  /** Remove a subscription from the database. */
+  async delete(req, res) {
+    const subscription = await Subscription.findByPk(req.params.id);
+
+    // Check if the user requesting the delete (logged-in user)
+    // is the organizer of the meetup.
+    if (subscription.id_user !== req.userId) {
+      return res.status(401).json({
+        error: 'You dont have permission to cancel this subscription',
+      });
+    }
+
+    await subscription.destroy();
+    return res.send();
   }
 }
 

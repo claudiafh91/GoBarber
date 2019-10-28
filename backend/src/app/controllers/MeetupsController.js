@@ -14,15 +14,15 @@ class MeetupsController {
       order: ['datetime'],
       limit: 10,
       offset: (page - 1) * 10,
-      attributes: ['id', 'title', 'description', 'location', 'datetime'],
+      attributes: ['id', 'title', 'description', 'location', 'datetime', 'happened'],
       include: [
         {
           model: Banner,
-          attributes: ['id', 'path'],
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
-    return res.json({ 'my meetups': meetups });
+    return res.json(meetups);
   }
 
   /** Register a new meetup in the database.
